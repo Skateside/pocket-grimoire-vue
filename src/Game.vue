@@ -22,18 +22,35 @@
         >{{ infoToken.text }}</button>
     </div>
 
+    <Dialog
+        ref="infoTokenDialog"
+        :hide="true"
+        @close="infoTokenId = ''"
+    >
+        <InfoToken :id="infoTokenId" />
+    </Dialog>
+
 </template>
 
 <script lang="ts" setup>
-    import { ref } from 'vue';
-    import { useInfoTokenStore, useGlobalStore } from "../src/store";
-    import RoleToken from './components/RoleToken.vue';
+import { ref, watch } from 'vue';
+import { useInfoTokenStore, useGlobalStore } from "../src/store";
+import RoleToken from './components/RoleToken.vue';
+import Dialog from './components/Dialog.vue';
+import InfoToken from './components/InfoToken.vue';
 
-    const globalStore = useGlobalStore();
-    const roleId = ref("");
+const globalStore = useGlobalStore();
+const roleId = ref("");
 
-    const infoTokenStore = useInfoTokenStore();
-    const infoTokenId = ref("");
+const infoTokenDialog = ref<typeof Dialog | null>(null);
+const infoTokenStore = useInfoTokenStore();
+const infoTokenId = ref("");
+
+watch(infoTokenId, (value) => {
+    if (value) {
+        infoTokenDialog.value?.show();
+    }
+});
 </script>
 
 <style lang="scss" scoped>

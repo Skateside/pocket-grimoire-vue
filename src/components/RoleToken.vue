@@ -12,7 +12,7 @@
             :data-other="(role.otherNight ?? 0) > 0"
             :data-setup="role.setup ?? false"
         >
-            <span class="role-token__image">
+            <span class="role-token__image" :class="`role-token__image--${role.team}`">
                 <img :src="image" alt="" class="role-token__icon" width="150" height="150" loading="lazy">
             </span>
             <svg viewBox="0 0 150 150" class="role-token__text">
@@ -28,28 +28,28 @@
 </template>
 
 <script lang="ts" setup>
-    import { computed } from "vue";
-    import { useGlobalStore } from "../store";
+import { computed } from "vue";
+import { useGlobalStore } from "../store";
 
-    const props = defineProps<{
-        id: string,
-        alignment?: 0 | 1 | 2,
-    }>();
-    const store = useGlobalStore();
-    const role = computed(() => store.getRole(props.id));
-    const image = computed(() => {
+const props = defineProps<{
+    id: string,
+    alignment?: 0 | 1 | 2,
+}>();
+const store = useGlobalStore();
+const role = computed(() => store.getRole(props.id));
+const image = computed(() => {
 
-        if (!role.value?.image) {
-            return "";
-        }
+    if (!role.value?.image) {
+        return "";
+    }
 
-        if (Array.isArray(role.value.image)) {
-            return role.value.image[props.alignment ?? 0];
-        }
+    if (Array.isArray(role.value.image)) {
+        return role.value.image[props.alignment ?? 0];
+    }
 
-        return role.value.image;
+    return role.value.image;
 
-    });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -179,6 +179,10 @@
     transform:
         scale(0.8)
         translateY(-5%);
+}
+
+.role-token__image--fabled {
+    filter: drop-shadow(0 0 0.5em #8a4d0f);
 }
 
 .role-token__icon {
