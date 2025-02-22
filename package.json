@@ -25,7 +25,9 @@
         "vue-tsc": "^2.2.0"
     },
     "keywords": [
+        "blood",
         "botc",
+        "clocktower",
         "grimoire"
     ]
 }

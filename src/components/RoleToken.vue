@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import type { IRole } from "../scripts/types/data";
 import { computed } from "vue";
-import { useRoleStore } from "../store";
+import useRoleStore from "../scripts/store/role";
 
 const props = defineProps<{
     id: IRole["id"],

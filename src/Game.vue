@@ -50,18 +50,22 @@
         <InfoToken :id="infoTokenId" />
     </Dialog>
 
+    <InfoTokenForm />
+
 </template>
 
 <script lang="ts" setup>
 import type { IRole } from "./scripts/types/data";
 import { computed, ref, watch } from 'vue';
-import { useRoleStore, useInfoTokenStore, useGlobalStore } from "../src/store";
+import useInfoTokenStore from "./scripts/store/infoToken";
+import useRoleStore from "./scripts/store/role";
 import RoleToken from './components/RoleToken.vue';
 import ReminderToken from './components/ReminderToken.vue';
 import Dialog from './components/Dialog.vue';
 import InfoToken from './components/InfoToken.vue';
+import InfoTokenForm from "./components/InfoTokenForm.vue";
 
-const globalStore = useGlobalStore();
+const roleStore = useRoleStore();
 const roleGroups = computed(() => {
 
     const groups: Record<string, IRole[]> = {
@@ -74,7 +78,7 @@ const roleGroups = computed(() => {
         special: [],
     };
 
-    globalStore.roles.forEach((role) => {
+    roleStore.roles.forEach((role) => {
 
         if (role.edition === "special") {
             groups.special.push(role);
@@ -88,8 +92,6 @@ const roleGroups = computed(() => {
 
 });
 const roleId = ref("");
-
-const roleStore = useRoleStore();
 const reminders = computed(() => roleStore.getReminders(roleId.value));
 
 const infoTokenDialog = ref<typeof Dialog | null>(null);

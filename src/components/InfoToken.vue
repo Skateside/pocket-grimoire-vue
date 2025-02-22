@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useInfoTokenStore } from "../store";
+import useInfoTokenStore from "../scripts/store/infoToken";
 import { toHTML } from "../scripts/utilities/markdown";
 
 const props = defineProps<{
