@@ -5,6 +5,7 @@
     "author": {
         "name": "Skateside"
     },
+    "type": "module",
     "scripts": {
         "data": "node tools/process-data.js",
         "dev": "vite",

@@ -633,7 +633,11 @@
     },
     {
         "id": "universalinfo",
-        "image": "/assets/icons/universalinfo.svg"
+        "image": [
+            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "/assets/icons/good.svg",
+            "/assets/icons/evil.svg"
+        ]
     },
     {
         "id": "vigormortis",

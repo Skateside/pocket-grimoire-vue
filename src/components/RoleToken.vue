@@ -7,7 +7,7 @@
 
         <div
             class="role-token"
-            :data-top="(role.reminders?.length ?? 0) + (role.remindersGlobal?.length ?? 0)"
+            :data-top="Math.min((role.reminders?.length ?? 0) + (role.remindersGlobal?.length ?? 0), 6)"
             :data-first="(role.firstNight ?? 0) > 0"
             :data-other="(role.otherNight ?? 0) > 0"
             :data-setup="role.setup ?? false"
@@ -28,28 +28,17 @@
 </template>
 
 <script lang="ts" setup>
+import type { IRole } from "../scripts/types/data";
 import { computed } from "vue";
-import { useGlobalStore } from "../store";
+import { useRoleStore } from "../store";
 
 const props = defineProps<{
-    id: string,
+    id: IRole["id"],
     alignment?: 0 | 1 | 2,
 }>();
-const store = useGlobalStore();
-const role = computed(() => store.getRole(props.id));
-const image = computed(() => {
-
-    if (!role.value?.image) {
-        return "";
-    }
-
-    if (Array.isArray(role.value.image)) {
-        return role.value.image[props.alignment ?? 0];
-    }
-
-    return role.value.image;
-
-});
+const store = useRoleStore();
+const role = computed(() => store.getById(props.id));
+const image = computed(() => store.getImage(props.id, props.alignment));
 </script>
 
 <style lang="scss" scoped>
@@ -120,8 +109,8 @@ const image = computed(() => {
         var(--top-leaf),
         var(--right-leaf),
         var(--setup-leaf),
-        url("/assets/token/background.svg"),
-        url("/assets/token/noise.webp");
+        url("/assets/token/role-background.svg"),
+        url("/assets/token/role-noise.webp");
     background-position: 50% 50%;
     background-repeat:
         no-repeat, 

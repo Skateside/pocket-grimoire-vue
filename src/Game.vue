@@ -1,15 +1,35 @@
 <template>
 
-    <div class="list">
-        <button
-            v-for="role in globalStore.roles"
-            :key="role.id"
-            type="button"
-            @click="() => roleId = role.id"
-        >{{ role.name }}</button>
+    <div v-for="(roles, group) in roleGroups">
+        <p>{{ group }}</p>
+        <div class="list">
+            <button
+                v-for="role in roles"
+                :key="role.id"
+                type="button"
+                @click="() => roleId = role.id"
+            >{{ role.name }}</button>
+        </div>
     </div>
+    <p><button type="button" @click="() => roleId = ''"><em>- clear -</em></button></p>
 
-    <RoleToken v-if="roleId" :id="roleId" />
+    <div v-if="roleId" class="list">
+        <div>
+            <RoleToken :id="roleId" />
+        </div>
+        <div
+            v-for="(_reminder, index) in reminders.local"
+            :key="`reminder-${roleId}-${index}`"
+        >
+            <ReminderToken :id="roleId" :index="index" />
+        </div>
+        <div
+            v-for="(_reminder, index) in reminders.global"
+            :key="`reminder-global-${roleId}-${index}`"
+        >
+            <ReminderToken :id="roleId" :index="index" :is-global="true" />
+        </div>
+    </div>
 
     <hr>
 
@@ -33,14 +53,44 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useInfoTokenStore, useGlobalStore } from "../src/store";
+import type { IRole } from "./scripts/types/data";
+import { computed, ref, watch } from 'vue';
+import { useRoleStore, useInfoTokenStore, useGlobalStore } from "../src/store";
 import RoleToken from './components/RoleToken.vue';
+import ReminderToken from './components/ReminderToken.vue';
 import Dialog from './components/Dialog.vue';
 import InfoToken from './components/InfoToken.vue';
 
 const globalStore = useGlobalStore();
+const roleGroups = computed(() => {
+
+    const groups: Record<string, IRole[]> = {
+        townsfolk: [],
+        outsider: [],
+        minion: [],
+        demon: [],
+        traveller: [],
+        fabled: [],
+        special: [],
+    };
+
+    globalStore.roles.forEach((role) => {
+
+        if (role.edition === "special") {
+            groups.special.push(role);
+        } else {
+            groups[role.team].push(role);
+        }
+
+    });
+
+    return groups;
+
+});
 const roleId = ref("");
+
+const roleStore = useRoleStore();
+const reminders = computed(() => roleStore.getReminders(roleId.value));
 
 const infoTokenDialog = ref<typeof Dialog | null>(null);
 const infoTokenStore = useInfoTokenStore();
