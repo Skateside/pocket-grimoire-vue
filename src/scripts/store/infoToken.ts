@@ -32,7 +32,7 @@ const useInfoTokenStore = defineStore("info-token", () => {
 
     watch(infoTokens, (value) => {
         storage.set(STORAGE_KEY, value.filter(({ isCustom }) => isCustom));
-    });
+    }, { deep: true });
 
     const getById = computed(() => (id: IInfoToken["id"]) => {
         return infoTokens.value.find(({ id: inoId }) => inoId === id);

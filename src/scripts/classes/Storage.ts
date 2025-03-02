@@ -3,7 +3,7 @@ export default class Storage implements IStorage {
     protected key: string;
     protected defaultValue: string;
 
-    constructor(key: string, defaultValue = "{}") {
+    constructor(key: string, defaultValue = {}) {
 
         this.key = key;
         this.defaultValue = JSON.stringify(defaultValue);

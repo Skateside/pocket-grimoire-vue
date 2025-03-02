@@ -47,15 +47,31 @@
         :hide="true"
         @close="infoTokenId = ''"
     >
-        <InfoToken :id="infoTokenId" />
+        <InfoToken
+            :id="infoTokenId"
+            @update="(id, text) => {
+                infoTokenFormId = id;
+                infoTokenFormText = text;
+            }"
+            @delete="deleteInfoToken"
+        />
     </Dialog>
 
-    <InfoTokenForm />
+    <InfoTokenForm
+        :id="infoTokenFormId"
+        :text="infoTokenFormText"
+        @create="addInfoToken"
+        @update="updateInfoToken"
+        @reset="{
+            infoTokenFormId = '';
+            infoTokenFormText = '';
+        }"
+    />
 
 </template>
 
 <script lang="ts" setup>
-import type { IRole } from "./scripts/types/data";
+import type { IInfoToken, IRole } from "./scripts/types/data";
 import { computed, ref, watch } from 'vue';
 import useInfoTokenStore from "./scripts/store/infoToken";
 import useRoleStore from "./scripts/store/role";
@@ -97,12 +113,26 @@ const reminders = computed(() => roleStore.getReminders(roleId.value));
 const infoTokenDialog = ref<typeof Dialog | null>(null);
 const infoTokenStore = useInfoTokenStore();
 const infoTokenId = ref("");
+const infoTokenFormId = ref("");
+const infoTokenFormText = ref("");
 
 watch(infoTokenId, (value) => {
     if (value) {
         infoTokenDialog.value?.show();
     }
 });
+
+const addInfoToken = (text: IInfoToken["text"]) => {
+    infoTokenStore.add(text);
+};
+
+const updateInfoToken = (id: IInfoToken["id"], text: IInfoToken["text"]) => {
+    infoTokenStore.update(id, text);
+};
+
+const deleteInfoToken = (id: IInfoToken["id"]) => {
+    infoTokenStore.remove(id);
+};
 </script>
 
 <style lang="scss" scoped>

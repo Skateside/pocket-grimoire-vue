@@ -1,11 +1,16 @@
 <template>
     <div class="info-token" :style="{ '--colour': `var(--${infoToken?.colour})` }">
         <button type="button" data-dialog="close" aria-label="Close">×</button>
+        <div v-if="infoToken?.isCustom">
+            <button type="button" data-dialog="close" @click="handleUpdate">Update</button>
+            <button type="button" data-dialog="close" @click="handleDelete">Delete</button>
+        </div>
         <div class="info-token__text" v-html="toHTML(infoToken?.text || '')"></div>
     </div>
 </template>
 
 <script setup lang="ts">
+import type { IInfoToken } from "../scripts/types/data";
 import { computed } from "vue";
 import useInfoTokenStore from "../scripts/store/infoToken";
 import { toHTML } from "../scripts/utilities/markdown";
@@ -13,8 +18,19 @@ import { toHTML } from "../scripts/utilities/markdown";
 const props = defineProps<{
     id: string,
 }>();
+const emit = defineEmits<{
+    (e: "update", id: IInfoToken["id"], text: IInfoToken["text"]): void,
+    (e: "delete", id: IInfoToken["id"]): void,
+}>();
 const infoTokenStore = useInfoTokenStore();
 const infoToken = computed(() => infoTokenStore.getById(props.id));
+const handleUpdate = () => {
+    if (!infoToken.value) {
+        return;
+    }
+    emit("update", infoToken.value.id, infoToken.value.text);
+};
+const handleDelete = () => emit("delete", props.id);
 </script>
 
 <style lang="scss" scoped>

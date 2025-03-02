@@ -1,6 +1,10 @@
 <template>
 
-    <form ref="form" @submit.prevent="handleSubmit">
+    <form
+        ref="form"
+        @submit.prevent="handleSubmit"
+        @reset="handleReset"
+    >
 
         <input
             v-model="id"
@@ -36,34 +40,47 @@
 import type { IInfoToken } from '../scripts/types/data';
 import { computed, ref } from "vue";
 
-const props = withDefaults(defineProps<{
-    mode?: "create" | "update",
-}>(), {
-    mode: "create",
-});
+// const props = withDefaults(defineProps<{
+//     mode?: "create" | "update",
+// }>(), {
+//     mode: "create",
+// });
+// const props = defineProps<{
+//     id?: IInfoToken["id"],
+//     text?: IInfoToken["text"],
+// }>();
 const form = ref<HTMLFormElement | null>();
 const submit = ref<HTMLButtonElement | null>(null);
-const submitText = computed(() => {
-    return submit.value?.dataset[props.mode] || "";
-});
-
 const id = defineModel<IInfoToken["id"]>("id");
 const text = defineModel<IInfoToken["text"]>("text");
+const mode = computed(() => (
+    id.value
+    ? "update"
+    : "create"
+));
+const submitText = computed(() => {
+    return submit.value?.dataset[mode.value] || "";
+});
 
 const emit = defineEmits<{
+    (e: "reset"): void,
     (e: "create", text: IInfoToken["text"]): void,
     (e: "update", id: IInfoToken["id"], text: IInfoToken["text"]): void,
 }>();
 
 const handleSubmit = () => {
 
-    if (props.mode === "create" && text.value) {
+    if (mode.value === "create" && text.value) {
         emit("create", text.value);
-    } else if (props.mode === "update" && id.value && text.value) {
+    } else if (mode.value === "update" && id.value && text.value) {
         emit("update", id.value, text.value);
     }
 
     form.value?.reset();
 
+};
+
+const handleReset = () => {
+    emit("reset");
 };
 </script>
