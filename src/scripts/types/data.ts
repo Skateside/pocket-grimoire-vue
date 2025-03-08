@@ -107,4 +107,4 @@ export type IRoleSpecial = {
     global?: IRolePlayTeam,
 };
 
-export type IRoleScript = (IRoleMeta | IRole | string)[];
+export type IRoleScript = (IRoleMeta | IRole | IRole["id"])[];

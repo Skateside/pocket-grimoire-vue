@@ -30,6 +30,16 @@
         "colour": "dark-purple"
     },
     {
+        "id": "useability",
+        "text": "Use your **ability**?",
+        "colour": "dark-orange"
+    },
+    {
+        "id": "makechoice",
+        "text": "Make a **choice**",
+        "colour": "dark-orange"
+    },
+    {
         "id": "youare",
         "text": "**You** are",
         "colour": "orange"

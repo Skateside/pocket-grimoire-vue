@@ -13,12 +13,12 @@
         >
 
         <p>
-            <label for="info-token-text">Text</label>
+            <label :for="`info-token-text-${suffix}`">Text</label>
             <input
                 v-model.trim="text"
                 type="text"
                 name="info-token-text"
-                id="info-token-text"
+                :id="`info-token-text-${suffix}`"
                 required
             >
         </p>
@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import type { IInfoToken } from '../scripts/types/data';
-import { computed, ref } from "vue";
+import { computed, useId, ref } from "vue";
 
 // const props = withDefaults(defineProps<{
 //     mode?: "create" | "update",
@@ -49,6 +49,7 @@ import { computed, ref } from "vue";
 //     id?: IInfoToken["id"],
 //     text?: IInfoToken["text"],
 // }>();
+const suffix = useId();
 const form = ref<HTMLFormElement | null>();
 const submit = ref<HTMLButtonElement | null>(null);
 const id = defineModel<IInfoToken["id"]>("id");
