@@ -26,7 +26,7 @@ const useInfoTokenStore = defineStore("info-token", () => {
     const storage = inject<IStorage>("storage")!;
     const STORAGE_KEY = "info-tokens";
     const infoTokens = ref<IInfoToken[]>([
-        ...window.PG.infoTokens,
+        ...structuredClone(window.PG.infoTokens),
         ...storage.get<IInfoToken[]>(STORAGE_KEY, []),
     ]);
 

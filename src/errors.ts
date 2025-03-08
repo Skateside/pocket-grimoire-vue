@@ -30,3 +30,23 @@ export class UnrecognisedInfoTokenError extends PocketGrimoireError {
         this.name = "UnrecognisedInfoTokenError";
     }
 }
+
+/**
+ * Role Store
+ */
+
+// The requested role hasn't been recognised.
+export class UnrecognisedRoleError extends PocketGrimoireError {
+    constructor(message: string) {
+        super(message);
+        this.name = "UnrecognisedRoleError";
+    }
+}
+
+// The requested script hasn't been recognised.
+export class UnrecognisedScriptError extends PocketGrimoireError {
+    constructor(message: string) {
+        super(message);
+        this.name = "UnrecognisedScriptError";
+    }
+}
