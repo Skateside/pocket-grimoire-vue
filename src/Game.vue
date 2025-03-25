@@ -33,6 +33,8 @@
 
     <hr> -->
 
+    <Grimoire />
+
     <div class="list">
         <button
             v-for="infoToken in infoTokenStore.infoTokens"
@@ -87,6 +89,7 @@ import useInfoTokenStore from "./scripts/store/infoToken";
 import Dialog from './components/Dialog.vue';
 import InfoToken from './components/InfoToken.vue';
 import InfoTokenForm from "./components/InfoTokenForm.vue";
+import Grimoire from "./components/Grimoire.vue";
 
 // const roleStore = useRoleStore();
 // const roleGroups = computed(() => {
