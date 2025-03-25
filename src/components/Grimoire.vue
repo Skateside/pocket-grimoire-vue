@@ -83,8 +83,14 @@ const getToken = (target: Element) => {
 
 let dragHandler: (event: MouseEvent | TouchEvent) => void = noop;
 
-const getIndex = (token: HTMLElement) => {
-    return Number(token.dataset.index);
+const getIndex = (token: HTMLElement | null) => {
+
+    return (
+        token
+        ? Number(token.dataset.index || "-1")
+        : -1
+    );
+
 };
 
 const moveTo = (token: HTMLElement, { x, y, z }: ICoordinates) => {
@@ -163,8 +169,9 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
 const startDrag = (event: MouseEvent | TouchEvent) => {
 
     const token = getToken(event.target as HTMLElement);
+    const index = getIndex(token);
 
-    if (!token) {
+    if (!token || index < 0) {
         return;
     }
 
@@ -177,7 +184,6 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
         left,
         top,
     } = token.getBoundingClientRect();
-    const index = getIndex(token);
     
     endDragging();
     dragHandler = (event) => dragObject(token, event);
