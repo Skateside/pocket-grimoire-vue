@@ -1,3 +1,11 @@
+// Co-ordinates - the base of seats and reminders.
+
+export type ICoordinates = {
+    x: number,
+    y: number,
+    z?: number,
+};
+
 // The breakdown of role types.
 
 export type IGame = Record<number, Record<IRoleCoreTeam, number>>;
@@ -26,8 +34,6 @@ export type IInfoTokenColours = (
     | "purple"
     | "red"
 );
-
-// export type IInfoData = IInfoToken[];
 
 // Roles.
 
@@ -108,3 +114,12 @@ export type IRoleSpecial = {
 };
 
 export type IRoleScript = (IRoleMeta | IRole | IRole["id"])[];
+
+// Seats.
+
+export type ISeat = Required<ICoordinates> & {
+    id: string,
+    role?: IRole["id"],
+    name?: string,
+};
+

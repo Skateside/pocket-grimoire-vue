@@ -198,7 +198,7 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
             clientY,
         } = event;
 
-        Object.assign(offset, {
+        Object.assign(offset.value, {
             x: clientX - left + x,
             y: clientY - top + y,
         });
@@ -214,7 +214,7 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
             return;
         }
 
-        Object.assign(offset, {
+        Object.assign(offset.value, {
             x: targetTouches[0].clientX - left + x,
             y: targetTouches[0].clientY - top + y,
         });
@@ -271,7 +271,7 @@ const updatePadDimentions = debounce(() => {
         height,
     } = grimoire.value.getBoundingClientRect();
 
-    Object.assign(pad, {
+    Object.assign(pad.value, {
         x: left,
         y: top,
         w: width,

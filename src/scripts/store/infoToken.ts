@@ -35,7 +35,7 @@ const useInfoTokenStore = defineStore("info-token", () => {
     }, { deep: true });
 
     const getById = computed(() => (id: IInfoToken["id"]) => {
-        return infoTokens.value.find(({ id: inoId }) => inoId === id);
+        return infoTokens.value.find(({ id: itId }) => itId === id);
     });
 
     const byType = computed(() => {
