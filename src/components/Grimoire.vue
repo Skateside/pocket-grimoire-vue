@@ -17,7 +17,6 @@
     </div>
     
     <p><button type="button" @click="addSeat">Add seat</button></p>
-    {{ __debug }}
 
 </template>
 
@@ -46,24 +45,20 @@ type IToken = Required<ICoordinates> & {
     // seat vs. reminder
 };
 
-// type IPad = Required<ICoordinates> & {
-//     w: number,
-//     h: number,
-// };
-type IPad = {
-    z: Required<ICoordinates>["z"],
+type IPad = Required<ICoordinates> & {
+    r: number,
+    b: number,
 };
 
-const __debug = ref<Record<string, any>>({});
 const grimoire = ref<HTMLElement | null>(null);
 const tokens = ref<IToken[]>([]);
 const isDragging = ref<boolean>(false);
 const pad = ref<IPad>({
-    // x: 0,
-    // y: 0,
+    x: 0,
+    y: 0,
     z: 0,
-    // w: 0,
-    // h: 0,
+    r: 0,
+    b: 0,
 });
 
 const addSeat = () => {
@@ -116,53 +111,35 @@ const moveTo = (token: HTMLElement, { x, y, z }: ICoordinates) => {
 
 const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
 
-    if (!grimoire.value) {
-        return;
-    }
-
     event.preventDefault();
+
+    let clientX = 0;
+    let clientY = 0;
+
+    if (event instanceof MouseEvent) {
+
+        clientX = event.clientX;
+        clientY = event.clientY;
+        isDragging.value = true;
+
+    } else if (event instanceof TouchEvent) {
+
+        const touches = event.targetTouches[0];
+
+        clientX = touches?.clientX || 0;
+        clientY = touches?.clientY || 0;
+
+    }
 
     const {
         x,
         y,
-        width,
-        height,
-    } = grimoire.value.getBoundingClientRect();
-    const {
-        scrollX,
-        scrollY,
-    } = window;
-    let left = 0;
-    let top = 0;
-
-    if (event instanceof MouseEvent) {
-
-        const {
-            clientX,
-            clientY,
-        } = event;
-
-        left = (clientX + scrollX - x) / (width - x);
-        top = (clientY + scrollY - y) / (height - y);
-
-    } else if (event instanceof TouchEvent) {
-
-        const {
-            targetTouches,
-        } = event;
-
-        if (targetTouches.length) {
-
-            left = (targetTouches[0].clientX + scrollX - x) / (width - x);
-            top = (targetTouches[0].clientY + scrollY - y) / (height - y);
-
-        }
-
-    }
-
+        r,
+        b,
+    } = pad.value;
     moveTo(token, {
-        x: clamp(0, left, 1),
-        y: clamp(0, top, 1),
+        x: clamp(0, (clientX - x) / (r - x), 1),
+        y: clamp(0, (clientY - y) / (b - y), 1),
     });
 
 };
@@ -232,17 +209,17 @@ const updatePadDimentions = debounce(() => {
     }
 
     const {
-        left,
         top,
-        width,
-        height,
+        left,
+        right,
+        bottom,
     } = grimoire.value.getBoundingClientRect();
 
     Object.assign(pad.value, {
-        x: left,
         y: top,
-        w: width,
-        h: height,
+        x: left,
+        r: right,
+        b: bottom,
     });
 
 }, 150);
@@ -281,6 +258,7 @@ onUnmounted(() => {
     border: 2px solid #000;
     background-color: #222;
     height: 80vh;
+    overflow: auto;
 }
 
 .seat {
