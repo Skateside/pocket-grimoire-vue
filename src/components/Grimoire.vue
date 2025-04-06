@@ -17,6 +17,7 @@
     </div>
     
     <p><button type="button" @click="addSeat">Add seat</button></p>
+    {{ __debug }}
 
 </template>
 
@@ -45,24 +46,24 @@ type IToken = Required<ICoordinates> & {
     // seat vs. reminder
 };
 
-type IPad = Required<ICoordinates> & {
-    w: number,
-    h: number,
+// type IPad = Required<ICoordinates> & {
+//     w: number,
+//     h: number,
+// };
+type IPad = {
+    z: Required<ICoordinates>["z"],
 };
 
+const __debug = ref<Record<string, any>>({});
 const grimoire = ref<HTMLElement | null>(null);
 const tokens = ref<IToken[]>([]);
 const isDragging = ref<boolean>(false);
 const pad = ref<IPad>({
-    x: 0,
-    y: 0,
+    // x: 0,
+    // y: 0,
     z: 0,
-    w: 0,
-    h: 0,
-});
-const offset = ref<ICoordinates>({
-    x: 0,
-    y: 0,
+    // w: 0,
+    // h: 0,
 });
 
 const addSeat = () => {
@@ -115,22 +116,25 @@ const moveTo = (token: HTMLElement, { x, y, z }: ICoordinates) => {
 
 const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
 
+    if (!grimoire.value) {
+        return;
+    }
+
     event.preventDefault();
 
     const {
         x,
         y,
-        w,
-        h,
-    } = pad.value;
-    // const {
-    //     x: offsetX,
-    //     y: offsetY,
-    // } = offset.value;
+        width,
+        height,
+    } = grimoire.value.getBoundingClientRect();
+    const {
+        scrollX,
+        scrollY,
+    } = window;
     let left = 0;
     let top = 0;
 
-    // TODO: Take the scrolling into account.
 
     if (event instanceof MouseEvent) {
 
@@ -139,8 +143,8 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
             clientY,
         } = event;
 
-        left = (clientX - x) / (w - x);
-        top = (clientY - y) / (h - y);
+        left = (clientX + scrollX - x) / (width - x);
+        top = (clientY + scrollY - y) / (height - y);
 
     } else if (event instanceof TouchEvent) {
 
@@ -150,8 +154,8 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
 
         if (targetTouches.length) {
 
-            left = (targetTouches[0].clientX - x) / (w - x);
-            top = (targetTouches[0].clientY - y) / (h - y);
+            left = (targetTouches[0].clientX + scrollX - x) / (width - x);
+            top = (targetTouches[0].clientY + scrollY - y) / (height - y);
 
         }
 
@@ -161,53 +165,6 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
         x: clamp(0, left, 1),
         y: clamp(0, top, 1),
     });
-
-    /*
-    const {
-        x,
-        y,
-    } = offset.value;
-
-    if (event instanceof MouseEvent) {
-
-        const {
-            clientX,
-            clientY,
-        } = event;
-
-        left = clientX - x;
-        top = clientY - y;
-        isDragging.value = true;
-
-    } else if (event instanceof TouchEvent) {
-
-        const {
-            targetTouches,
-        } = event;
-
-        if (targetTouches.length) {
-
-            left = targetTouches[0].clientX - x;
-            top = targetTouches[0].clientY - y;
-
-        }
-
-    }
-
-    const {
-        w,
-        h,
-    } = pad.value;
-    const {
-        width,
-        height,
-    } = token.getBoundingClientRect();
-
-    moveTo(token, {
-        x: clamp(0, left, w - width),
-        y: clamp(0, top, h - height),
-    });
-    */
 
 };
 
@@ -221,16 +178,8 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
     }
 
     const {
-        x,
-        y,
         z,
     } = pad.value;
-    const {
-        left,
-        top,
-        // width,
-        // height,
-    } = token.getBoundingClientRect();
     
     endDragging();
     dragHandler = (event) => dragObject(token, event);
@@ -238,38 +187,10 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
     tokens.value[index].z = z;
     pad.value.z += 1;
 
-    if (event instanceof MouseEvent) {
-
-        const {
-            clientX,
-            clientY,
-        } = event;
-
-        Object.assign(offset.value, {
-            x: clientX - left + x,
-            y: clientY - top + y,
-        });
-        window.addEventListener("mousemove", dragHandler);
-
-    } else if (event instanceof TouchEvent) {
-
-        const {
-            targetTouches,
-        } = event;
-
-        if (!targetTouches.length) {
-            return;
-        }
-
-        Object.assign(offset.value, {
-            x: targetTouches[0].clientX - left + x,
-            y: targetTouches[0].clientY - top + y,
-        });
-        window.addEventListener("touchmove", dragHandler, {
-            passive: false,
-        });
-
-    }
+    window.addEventListener("mousemove", dragHandler);
+    window.addEventListener("touchmove", dragHandler, {
+        passive: false,
+    });
 
 };
 
