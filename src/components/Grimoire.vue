@@ -68,8 +68,8 @@ const offset = ref<ICoordinates>({
 const addSeat = () => {
 
     tokens.value.push({
-        x: pad.value.x,
-        y: pad.value.y,
+        x: 0.1,
+        y: 0.1,
         z: pad.value.z,
     });
 
@@ -117,8 +117,52 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
 
     event.preventDefault();
 
+    const {
+        x,
+        y,
+        w,
+        h,
+    } = pad.value;
+    // const {
+    //     x: offsetX,
+    //     y: offsetY,
+    // } = offset.value;
     let left = 0;
     let top = 0;
+
+    // TODO: Take the scrolling into account.
+
+    if (event instanceof MouseEvent) {
+
+        const {
+            clientX,
+            clientY,
+        } = event;
+
+        left = (clientX - x) / (w - x);
+        top = (clientY - y) / (h - y);
+
+    } else if (event instanceof TouchEvent) {
+
+        const {
+            targetTouches,
+        } = event;
+
+        if (targetTouches.length) {
+
+            left = (targetTouches[0].clientX - x) / (w - x);
+            top = (targetTouches[0].clientY - y) / (h - y);
+
+        }
+
+    }
+
+    moveTo(token, {
+        x: clamp(0, left, 1),
+        y: clamp(0, top, 1),
+    });
+
+    /*
     const {
         x,
         y,
@@ -163,6 +207,7 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
         x: clamp(0, left, w - width),
         y: clamp(0, top, h - height),
     });
+    */
 
 };
 
@@ -183,6 +228,8 @@ const startDrag = (event: MouseEvent | TouchEvent) => {
     const {
         left,
         top,
+        // width,
+        // height,
     } = token.getBoundingClientRect();
     
     endDragging();
@@ -337,9 +384,10 @@ onUnmounted(() => {
     --z: 0;
     cursor: move;
     position: absolute;
-    left: calc(var(--x) * 1px);
-    top: calc(var(--y) * 1px);
+    left: calc(var(--x) * 100%);
+    top: calc(var(--y) * 100%);
     z-index: var(--z);
     touch-action: none;
+    transform: translate(-50%, -50%);
 }
 </style>
