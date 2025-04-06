@@ -135,7 +135,6 @@ const dragObject = (token: HTMLElement, event: MouseEvent | TouchEvent) => {
     let left = 0;
     let top = 0;
 
-
     if (event instanceof MouseEvent) {
 
         const {
