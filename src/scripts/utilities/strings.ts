@@ -25,7 +25,7 @@ export function randomId(prefix = "") {
  * @return Converted string.
  * @see https://stackoverflow.com/a/24282873/557019
  */
-export function readUTF8(bytes: string) {
+/*export function readUTF8(bytes: string) {
 
     const {
         length
@@ -82,7 +82,7 @@ export function readUTF8(bytes: string) {
 
     return string;
 
-}
+}*/
 
 /**
  * Takes a string containing placeholders (denoted between `{` and `}`) and
