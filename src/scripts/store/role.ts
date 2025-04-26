@@ -178,6 +178,10 @@ const useRoleStore = defineStore("role", () => {
 
     });
 
+    const getIsUniversal = computed(() => (id: IRole["id"]) => {
+        return id === "universalinfo";
+    });
+
     return {
         // State.
         roles,
@@ -187,6 +191,7 @@ const useRoleStore = defineStore("role", () => {
         getById,
         getImage,
         getReminders,
+        getIsUniversal,
         // Actions.
     };
 
